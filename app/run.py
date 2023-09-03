@@ -1,54 +1,48 @@
-import json
-import plotly
-import pandas as pd
-
-from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
+import json
+import plotly
+import pandas as pd
 
+from nltk.stem import WordNetLemmatizer
 
 app = Flask(__name__)
 
-def tokenize(text):
-    tokens = word_tokenize(text)
+def tokenize_text(input_text):
+    tokens = word_tokenize(input_text)
     lemmatizer = WordNetLemmatizer()
 
     clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
+    for token in tokens:
+        clean_token = lemmatizer.lemmatize(token).lower().strip()
+        clean_tokens.append(clean_token)
 
     return clean_tokens
-
-# load data
-engine = create_engine('sqlite:///../data/DisasterResponse.db')
-df = pd.read_sql_table('DisasterResponse_table', engine)
 
 # load model
 model = joblib.load("../models/classifier.pkl")
 
+# load data
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+data_df = pd.read_sql_table('DisasterResponse_table', engine)
 
-# index webpage displays cool visuals and receives user input text for model
+# index webpage displays visuals and receives user input for model
 @app.route('/')
 @app.route('/index')
 def index():
-    
-    # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
+    # extract data for visuals
+    genre_counts = data_df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
-    category_names = df.iloc[:, 4:].columns
-    category_counts = (df.iloc[:, 4:]!=0).sum()
+    category_names = data_df.iloc[:, 4:].columns
+    category_counts = (data_df.iloc[:, 4:] != 0).sum()
     
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
-    graphs = [
+    visualizations = [
         {
             'data': [
                 Bar(
@@ -86,38 +80,34 @@ def index():
                 }
             }
         }
-        
     ]
     
     # encode plotly graphs in JSON
-    ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
-    graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
+    ids = ["graph-{}".format(i) for i, _ in enumerate(visualizations)]
+    graphs_json = json.dumps(visualizations, cls=plotly.utils.PlotlyJSONEncoder)
     
     # render web page with plotly graphs
-    return render_template('master.html', ids=ids, graphJSON=graphJSON)
+    return render_template('master.html', ids=ids, graphs_json=graphs_json)
 
-
-# web page that handles user query and displays model results
+# web page for user query and displaying model results
 @app.route('/go')
 def go():
-    # save user input in query
-    query = request.args.get('query', '') 
+    # save user input as query
+    user_query = request.args.get('query', '') 
 
     # use model to predict classification for query
-    classification_labels = model.predict([query])[0]
-    classification_results = dict(zip(df.columns[4:], classification_labels))
+    classification_labels = model.predict([user_query])[0]
+    classification_results = dict(zip(data_df.columns[4:], classification_labels))
 
-    # This will render the go.html Please see that file. 
+    # Render the go.html file
     return render_template(
         'go.html',
-        query=query,
+        query=user_query,
         classification_result=classification_results
     )
 
-
 def main():
     app.run(host='0.0.0.0', port=3001, debug=True)
-
 
 if __name__ == '__main__':
     main()

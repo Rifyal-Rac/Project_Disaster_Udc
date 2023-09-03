@@ -2,10 +2,6 @@ import pandas as pd
 from sqlalchemy import create_engine
 import sys
 
-
-
-
-
 def data_loading(input_file1, input_file2):
     """
     Load the data

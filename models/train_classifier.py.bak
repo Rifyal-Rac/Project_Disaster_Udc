@@ -18,24 +18,8 @@ from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
 from sqlalchemy import create_engine
 
+Copied!
 def load_data(input_filepath):
-    """
-    INPUT:
-    input_filepath - Filepath to SQLite database
-    
-    OUTPUT:
-    X - Messages (input variable)
-    y - Categories of the messages (output variable)
-    category_names - Category names for y
-    """
-    engine = create_engine('sqlite:///' + input_filepath)
-    data_df = pd.read_sql_table('DisasterResponse_table', engine)
-    
-    X = data_df['message']
-    y = data_df.iloc[:, 4:]
-    category_names = y.columns
-    return X, y, category_names
-
 
 def clean_text(text):
     """
