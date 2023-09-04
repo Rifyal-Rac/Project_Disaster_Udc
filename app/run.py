@@ -7,6 +7,7 @@ from nltk.stem import WordNetLemmatizer
 from flask import Flask
 from flask import render_template, request
 from plotly.graph_objs import Bar
+from plotly.utils import PlotlyJSONEncoder
 
 from sqlalchemy import create_engine
 import joblib
@@ -36,57 +37,74 @@ df = pd.read_sql_table('DisasterResponse_table', engine)
 @app.route('/')
 @app.route('/index')
 def index():
-    # extract data for visuals
-    count_genre = df.groupby('genre').count()['message']
-    name_genre = list(count_genre.index)
     
-    name_category = df.iloc[:, 4:].columns
-    count_category = (df.iloc[:, 4:] != 0).sum()
+    # extract data needed for visuals
+    genre_counts = df.groupby('genre').count()['message']
+    genre_names = list(genre_counts.index)
     
-    # create visuals
-    visualizations = [
-        {
-            'data': [
-                Bar(
-                    x=name_genre,
-                    y=count_genre
-                )
-            ],
+    category_names = df.iloc[:, 4:].columns
+    category_counts = (df.iloc[:, 4:]!=0).sum()
+    genre_category_counts = df.groupby('genre').sum().iloc[:, 1:]
+    genre_category_names = list(genre_category_counts.columns)
 
-            'layout': {
-                'title': 'Distribution of Message: Genres ',
-                'yaxis': {
-                    'title': "Number"
-                },
-                'xaxis': {
-                    'title': "Genre"
-                }
-            }
-        },
-        
-        {
-            'data': [
-                Bar(
-                    x=name_category,
-                    y=count_category
-                )
-            ],
+    genre_visualization = {
+        'data': [
+            Bar(
+                x=genre_category_names,
+                y=genre_category_counts.loc[genre].values,
+                name=genre
+            ) for genre in genre_names
+        ],
 
-            'layout': {
-                'title': 'Distribution of Message: Categories',
-                'yaxis': {
-                    'title': "Number"
-                },
-                'xaxis': {
-                    'title': "Category"
-                }
+        'layout': {
+            'title': 'Distribution of Message Categories by Genre',
+            'barmode': 'group',
+            'yaxis': {
+                'title': 'Count'
+            },
+            'xaxis': {
+                'title': 'Category'
             }
         }
-    ]
+    }
+
+    category_visualization = {
+        'data': [
+            Bar(
+                x=category_names,
+                y=category_counts,
+                marker_color='blue',
+                name='Not Relevant'
+            ),
+            Bar(
+                x=category_names,
+                y=len(df) - category_counts,
+                marker_color='orange',
+                name='Relevant'
+            )
+        ],
+
+        'layout': {
+            'title': 'Distribution of Message Categories',
+            'barmode': 'stack',
+            'yaxis': {
+                'title': 'Count'
+            },
+            'xaxis': {
+                'title': 'Category'
+            }
+        }
+    }
+    visualizations = [
+        genre_visualization,
+        category_visualization
+        ]
+
+    
     
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(visualizations)]
-    graphs_json = json.dumps(visualizations, cls=plotly.utils.PlotlyJSONEncoder)
+    graphs_json = json.dumps(visualizations, cls=PlotlyJSONEncoder)
     
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphs_json=graphs_json)

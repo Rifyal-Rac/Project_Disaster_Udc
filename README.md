@@ -42,8 +42,16 @@ python .\data\process_data.py .\data\disaster_messages.csv .\data\disaster_categ
 python .\models\train_classifier.py .\data\DisasterResponse.db .\models\classifier.pkl
 3. To run the web app, execute:
 python .\app\run.py
-4. Access the web app by going to [http://0.0.0.0:3001/](http://0.0.0.0:3001/)
+4. Access the web app by going to [http://127.0.0.1:3001](http://127.0.0.1:3001)
 
 ## Acknowledgments
 - Udacity for Data Scientist training program.
 - Figure Eight for providing the dataset.
+
+## Capture
+1. Opening Page
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/1Opening%20Page.png)
+
+1. Run the model pipeline
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/1Opening%20Page.png)
+

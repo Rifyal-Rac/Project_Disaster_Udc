@@ -32,7 +32,7 @@
 <div class="jumbotron">
     <div class="container">
         <h1 class="text-center">Disaster Response Project</h1>
-        <p class="text-center">We will Analyzing message data for disaster response </p>
+        <p class="text-center">We will analyzing message data for disaster response </p>
         <hr />
       
         <div class="row">
@@ -64,10 +64,10 @@
 </div>
 
 <script type="text/javascript">
-    const graphs = {{graphJSON | safe}};
+    const graphs = {{graphs_json | safe}};
     const ids = {{ids | safe}};
-    for(let i in graphs) {
-        Plotly.plot(ids[i], graphs[i].data, graphs[i].layout);
+    for (let i in graphs) {
+        Plotly.newPlot(ids[i], graphs[i].data, graphs[i].layout);
     }
 </script>
 
