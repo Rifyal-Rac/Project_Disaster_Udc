@@ -49,9 +49,22 @@ python .\app\run.py
 - Figure Eight for providing the dataset.
 
 ## Capture
-1. Opening Page
-![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/1Opening%20Page.png)
+1. Opening Page and data distribution
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/1Opening%20Page%20with%20training%20data%20distribution.png)
 
-1. Run the model pipeline
-![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/1Opening%20Page.png)
+2. Run the model pipeline
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/3Run%20webapp.png)
+
+3. Run the webapp
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/3Run%20webapp.png)
+
+4. Run data preprocessing
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/4First%20data%20preprocessing.png)
+
+5. Sample output
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/5Result%20output.png)
+
+
+
+
 
