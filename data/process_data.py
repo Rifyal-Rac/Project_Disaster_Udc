@@ -4,8 +4,6 @@ import sys
 
 
 
-
-
 def data_loading(input_file1, input_file2):
     """
     Load the data
@@ -24,7 +22,7 @@ def data_loading(input_file1, input_file2):
     return merged_df
     
 
-def data_wragling(data_df):
+def data_wraNgling(data_df):
     """
     Cleansing the data
     
@@ -46,7 +44,7 @@ def data_wragling(data_df):
     cleaned_df = data_df.drop('categories', axis=1)
     cleaned_df = pd.concat([cleaned_df, categories], axis=1)
     cleaned_df.drop_duplicates(inplace=True)
-    cleaned_df = cleaned_df.drop('child_alone', axis=1)
+    cleaned_df = cleaned_df.drop('child_alone', axis=1) # drop column contain only null
     cleaned_df['related'] = cleaned_df['related'].map(lambda x: 1 if x == 2 else x)
     
     return cleaned_df
@@ -83,7 +81,7 @@ def main():
         print('Loading data...\n    INPUT FILE 1: {}\n    INPUT FILE 2: {}'.format(input_file1, input_file2))
         data_df = data_loading(input_file1, input_file2)
         print('Cleaning data...')
-        cleaned_df = data_wragling(data_df)
+        cleaned_df = data_wraNgling(data_df)
         print('Saving data...\n    DATABASE: {}'.format(db_filename))
         save_data_to_table(cleaned_df, db_filename)
         print('Data processing completed and saved!')

@@ -1,14 +1,16 @@
-from nltk.tokenize import word_tokenize
-from flask import Flask
-from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
-from sklearn.externals import joblib
-from sqlalchemy import create_engine
 import json
 import plotly
 import pandas as pd
 
+from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from flask import Flask
+from flask import render_template, request
+from plotly.graph_objs import Bar
+
+from sqlalchemy import create_engine
+import joblib
+
 
 app = Flask(__name__)
 
@@ -23,38 +25,38 @@ def tokenize_text(input_text):
 
     return clean_tokens
 
-# load model
-model = joblib.load("../models/classifier.pkl")
+# model created load
+model = joblib.load("./models/classifier.pkl")
 
-# load data
-engine = create_engine('sqlite:///../data/DisasterResponse.db')
-data_df = pd.read_sql_table('DisasterResponse_table', engine)
+# loading the data data
+engine = create_engine('sqlite:///./data/DisasterResponse.db')
+df = pd.read_sql_table('DisasterResponse_table', engine)
 
-# index webpage displays visuals and receives user input for model
+# webpage visual
 @app.route('/')
 @app.route('/index')
 def index():
     # extract data for visuals
-    genre_counts = data_df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
+    count_genre = df.groupby('genre').count()['message']
+    name_genre = list(count_genre.index)
     
-    category_names = data_df.iloc[:, 4:].columns
-    category_counts = (data_df.iloc[:, 4:] != 0).sum()
+    name_category = df.iloc[:, 4:].columns
+    count_category = (df.iloc[:, 4:] != 0).sum()
     
     # create visuals
     visualizations = [
         {
             'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=name_genre,
+                    y=count_genre
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Distribution of Message: Genres ',
                 'yaxis': {
-                    'title': "Count"
+                    'title': "Number"
                 },
                 'xaxis': {
                     'title': "Genre"
@@ -65,15 +67,15 @@ def index():
         {
             'data': [
                 Bar(
-                    x=category_names,
-                    y=category_counts
+                    x=name_category,
+                    y=count_category
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Categories',
+                'title': 'Distribution of Message: Categories',
                 'yaxis': {
-                    'title': "Count"
+                    'title': "Number"
                 },
                 'xaxis': {
                     'title': "Category"
@@ -97,7 +99,12 @@ def go():
 
     # use model to predict classification for query
     classification_labels = model.predict([user_query])[0]
-    classification_results = dict(zip(data_df.columns[4:], classification_labels))
+    classification_results = dict(
+        zip(
+            df.columns[4:], 
+            classification_labels
+            )
+            )
 
     # Render the go.html file
     return render_template(
@@ -105,6 +112,7 @@ def go():
         query=user_query,
         classification_result=classification_results
     )
+
 
 def main():
     app.run(host='0.0.0.0', port=3001, debug=True)

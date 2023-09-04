@@ -37,13 +37,13 @@ There should be no additional libraries required for installation apart from tho
 To set up your database and model, follow these commands in the project's root directory:
 
 1. Run the ETL pipeline to clean data and store it in the database: 
-python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db
-2  Run the ML pipeline to train the classifier and save it:
-python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl
-3. To run the web app, navigate to the app's directory and execute:
-python run.py
+python .\data\process_data.py .\data\disaster_messages.csv .\data\disaster_categories.csv .\data\DisasterResponse.db
+2. Run the ML pipeline to train the classifier and save it (estimated 40 mins):
+python .\models\train_classifier.py .\data\DisasterResponse.db .\models\classifier.pkl
+3. To run the web app, execute:
+python .\app\run.py
 4. Access the web app by going to [http://0.0.0.0:3001/](http://0.0.0.0:3001/)
 
 ## Acknowledgments
-- Udacity for providing an excellent Data Scientist training program.
-- Figure Eight for providing the dataset used to train our model.
+- Udacity for Data Scientist training program.
+- Figure Eight for providing the dataset.

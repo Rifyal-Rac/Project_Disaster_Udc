@@ -16,6 +16,15 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
 
 def load_data(database_filepath):
+    '''
+    Load the data from DB
+
+    Input : 
+    database_filepath - target DB
+
+    Output :
+    X,Y, category names - feeding data training
+    '''
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table('DisasterResponse_table', con=engine)
     X = df['message']
@@ -24,6 +33,9 @@ def load_data(database_filepath):
     return X, y, category_names
 
 def tokenize_text(text):
+    '''
+    tokenize text
+    '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -35,6 +47,9 @@ def tokenize_text(text):
     return clean_tokens
 
 def build_model():
+    '''
+    Build pipeline model using AdaBoostClassifier  and Grid Search CV
+    '''
     pipeline = Pipeline([
         ('text_vec', CountVectorizer(tokenizer=tokenize_text)),
         ('tfidf', TfidfTransformer()),
@@ -42,7 +57,7 @@ def build_model():
     ])
 
     parameters = {
-        'clf__estimator__n_estimators': [50, 100],
+        'clf__estimator__n_estimators': [10, 30],
         'clf__estimator__learning_rate': [0.1, 0.5]
     }
 
@@ -58,7 +73,7 @@ def save_model(model, model_filepath):
         pickle.dump(model, file)
 
 def main():
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1], sys.argv[2]
 
         print('Loading data...')
