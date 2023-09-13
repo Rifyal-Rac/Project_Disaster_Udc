@@ -57,11 +57,11 @@ To set up your database and model, follow these commands in the project's root d
 2. Run the model pipeline
 ![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/2Run%20the%20model%20pipeline.png)
 
-3. Opening Page and data distribution
-![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/1Opening%20Page%20with%20training%20data%20distribution.png)
-
-4. Run the webapp
+3. Run the webapp
 ![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/3Run%20webapp.png)
+
+4. Opening Page and data distribution
+![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/1Opening%20Page%20with%20training%20data%20distribution.png)
 
 5. Sample output
 ![image](https://github.com/Rifyal-Rac/Project_Disaster_Udc/blob/main/capture/5Result%20output.png)
