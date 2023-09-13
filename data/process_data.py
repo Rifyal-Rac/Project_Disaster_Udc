@@ -32,21 +32,24 @@ def data_wraNgling(data_df):
     Output:
     cleaned_df - Processed and cleaned data
     """
-    categories = data_df['categories'].str.split(pat=';', expand=True)
-    first_row = categories.iloc[0]
-    col_names = first_row.apply(lambda x: x[:-2])
-    categories.columns = col_names
-    
-    for column in categories:
-        categories[column] = categories[column].astype(str).str[-1]
-        categories[column] = categories[column].astype(int)
-        
-    cleaned_df = data_df.drop('categories', axis=1)
-    cleaned_df = pd.concat([cleaned_df, categories], axis=1)
-    cleaned_df.drop_duplicates(inplace=True)
-    cleaned_df = cleaned_df.drop('child_alone', axis=1) # drop column contain only null
-    cleaned_df['related'] = cleaned_df['related'].map(lambda x: 1 if x == 2 else x)
-    
+    # split the data and get new column as header
+    category = data_df['categories'].str.split(pat=';', expand=True)
+    new_columns = [str(x).split('-')[0] for x in category.iloc[0]]
+    # rename the columns of `categories`
+    category.columns = new_columns
+    # replace value to 0 or 1
+    categories_transformed = category.map(lambda x: int(x.split('-')[-1]))
+    # drop the original categories column from `df`
+    data_df = data_df.drop('categories', axis = 1)
+    # concat to df
+    data_df = pd.concat([data_df, categories_transformed], axis =1)
+    # drop duplicate
+    data_df.drop_duplicates(inplace = True)
+    # change value of df.related that contain value 2
+    data_df.loc[data_df['related']==2, 'related'] = 1
+    # clean up drop column contain only null
+    cleaned_df = data_df.drop('child_alone', axis=1)
+
     return cleaned_df
 
 def save_data_to_table(cleaned_df, db_filename):
