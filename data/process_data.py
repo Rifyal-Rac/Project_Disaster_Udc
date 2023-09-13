@@ -22,7 +22,7 @@ def data_loading(input_file1, input_file2):
     return merged_df
     
 
-def data_wraNgling(data_df):
+def data_wrangling(data_df):
     """
     Cleansing the data
     
@@ -38,7 +38,7 @@ def data_wraNgling(data_df):
     # rename the columns of `categories`
     category.columns = new_columns
     # replace value to 0 or 1
-    categories_transformed = category.map(lambda x: int(x.split('-')[-1]))
+    categories_transformed = category.applymap(lambda x: int(x.split('-')[-1]))
     # drop the original categories column from `df`
     data_df = data_df.drop('categories', axis = 1)
     # concat to df
@@ -84,7 +84,7 @@ def main():
         print('Loading data...\n    INPUT FILE 1: {}\n    INPUT FILE 2: {}'.format(input_file1, input_file2))
         data_df = data_loading(input_file1, input_file2)
         print('Cleaning data...')
-        cleaned_df = data_wraNgling(data_df)
+        cleaned_df = data_wrangling(data_df)
         print('Saving data...\n    DATABASE: {}'.format(db_filename))
         save_data_to_table(cleaned_df, db_filename)
         print('Data processing completed and saved!')
